@@ -1,0 +1,26 @@
+.large-title{
+    font-size: 1.0rem;
+    background: #f7f7f7;
+    border-radius: 10px;
+    padding: 5px 20px;
+    display:inline-block;
+    margin: 20px 0 10px 0;
+}
+
+.large-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.large-col{
+    position: relative;
+}
+.column2_high{
+    font-size: 0.8rem;
+}
+
+ul{
+    margin:0;
+    padding:0;
+    list-style-type: none;
+}

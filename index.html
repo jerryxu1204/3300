@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Pokémon Interactive Match-up Chart</title>
+<link rel="stylesheet" href="typechart.css">
+<link rel="stylesheet" href="layout.css">
+<link rel="stylesheet" href="statschart.css">
+<script src="d3.v3.min.js"></script>
+
+<body>
+    <h1>Pokemon Relationship</h1>
+
+    <div class="introduction">
+      <p>The focus of our project is on Pokemons's Relationship and their stats. The visualizations below illustrate the different types of pokemon, their weakness and strength when battle with other pokemon.  </p>
+    </div>
+  
+    <div class="row row1">
+      <div class="column1">
+        <h2>Pokemons all have different types.</h2>
+        <p>Different types have different damage advantage to other types. The following visualization shows damage advantages among different types.</p>
+        <table id="legend">
+            <tr>
+              <td>Strongly Effective (2x)</td>
+              <td><span class="legend strong-effectiveness"></span></td>
+            </tr>
+            <tr>
+              <td>Weakly Effective (.5x)</td>
+              <td><span class="legend weak-effectiveness"></span></td>
+            </tr>
+            <tr>
+              <td>Immune (0x)</td>
+              <td><span class="legend is-immune"></span></td>
+            </tr>
+          </table>
+      </div>
+      <div class="column2">
+        <svg id="small" width="800" height="700">
+        </svg>
+      </div>
+    </div>
+
+
+  
+    <div id="bottom" class="row row2">
+      <div class="column2_high">
+  
+        <svg id="large" width="1000" height="600">
+        </svg>
+        <div style="background: rgba(0,0,0,0); position: absolute; top:200px; left:270px; width:300px; height:300px;">
+          <div class="large-row">
+            <div class="large-col">
+              <img id= "pokemonimg" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"/>
+              <div><span id="pokemonname">Pikachu</span> #<span id="pokemonid">25</span></div>
+            </div>
+            <div class="large-col">
+                <div class="large-title">Stats</div>
+                <svg id="stats"></svg>
+            </div>
+          </div>
+          <div class="large-row">
+              <div class="large-col">
+              <div class="large-title">Resistances</div>
+              <ul id="resistances">
+                <li>62.5% Damage</li>
+                <li>62.5% Damage</li>
+                <li>62.5% Damage</li>
+              </ul>
+              </div>
+              <div class="large-col">
+                  <div class="large-title">Weaknesses</div>
+                  <ul id="weaknesses">
+                    <li>160% Damage</li>
+                  </ul>
+              </div>
+              
+          </div>
+          
+        </div>
+  
+      </div>
+      <div class="column1_high">
+        <h2> Pokemons are different, they all have different stats</h2>
+        <p> A pokemon can have at most 3 different kind of properties, and their stats are all different. Different pokemons can be countered by othere poekmons. In this visiulization, we can show the countered pokemon for the selected properety.</p>
+
+      </div>
+    </div>
+    </body>
+
+    <script>
+        var diameter = 700,
+            radius = diameter / 2,
+            innerRadius = radius - 100,
+            innerRadiusLarge = radius - 30;
+    
+        var cluster = d3.layout.cluster()
+            .size([360, innerRadius])
+            .sort(null)
+            .value(function(d) { return d.size; });
+    
+        var bundle = d3.layout.bundle();
+    
+        var line = d3.svg.line.radial()
+            .interpolate("bundle")
+            .tension(0.75)
+            .radius(function(d) { return d.y; })
+            .angle(function(d) { return d.x / 180 * Math.PI; });
+    
+        window.colorPath = function(d, l, type) {
+          var type = type || 'strong';
+          if (type == 'strong') {
+            if (l.target === d) return l.source.target = true;
+          }
+          if (type == 'weak') {
+            if (l.target === d) return l.source.target = true;
+          }
+          return false;
+        }
+      </script>
+      <script src="typechart.js"></script>

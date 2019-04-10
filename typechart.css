@@ -1,0 +1,96 @@
+svg {
+    font-family: 'Open Sans';
+}
+
+.node {
+    font: 300 16px 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    opacity: 1;
+}
+
+.node:hover,
+.node--active {
+    font-weight: 400;
+}
+
+.immune,
+.weak,
+.strong {
+    stroke: #bbb;
+    stroke-opacity: 0.2;
+    fill: none;
+    pointer-events: none;
+    z-index: -100;
+    stroke-width: 1px;
+    stroke-dasharray: 500;
+    stroke-dashoffset: 500;
+    animation-name: dash;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+}
+.node:hover,
+.node--source,
+.node--target,
+.node--active {
+    font-weight: 400;
+    opacity: 1;
+}
+
+.weak-effectiveness,
+.strong-effectiveness,
+.is-immune {
+    stroke-width: 2px;
+    stroke-opacity: 1;
+    z-index: 99999;
+}
+
+.legend {
+    display: inline-block;
+    width: 30px;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 2px;
+}
+
+.is-immune {
+    stroke: rgba(187, 187, 187, 0.911);
+    stroke-width: 2px;
+    stroke-dasharray: 5,10;
+    border: 2px dashed rgba(187, 187, 187, 0.911);
+}
+
+.weak-effectiveness {
+    stroke: #ef6b57;
+    stroke-width: 2px;
+    background: #ef6c57;
+    border-color: rgba(0,0,0,0);
+    height: 2px;
+}
+
+.strong-effectiveness {
+    stroke: #7ed3b2;
+    stroke-width: 2px;
+    background: #7ed3b2;
+    border-color: rgba(0,0,0,0);
+    height: 2px;
+}
+
+#typechart {
+    margin: auto;
+    text-align: center;
+    width: 1100px;
+    background: rgb(66, 64, 64);
+}
+
+#details {
+    width: 400px;
+    float: left;
+    color: white;
+    font-family: 'Open Sans';
+    text-align: left;
+}
+
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
