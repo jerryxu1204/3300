@@ -352,7 +352,7 @@ function showBottom(colors){
     }
 
     function showType(typeName,filters){
-      var pokemons = pokemonsByType[typeName];
+      var pokemons = [...pokemonsByType[typeName]];
       if(filters){
         pokemons = pokemons.filter(p=>(filters.attack&&p.attack>=filters.attack[0]&&p.attack<=filters.attack[1])
         ||(filters.defense&&p.defense>=filters.defense[0]&&p.defense<=filters.defense[1])
@@ -556,9 +556,9 @@ function showBottom(colors){
       //   .text(brush.extent()[1]);
 
       function brushed() {
-        let range = [Math.max(minmax[0],brush.extent()[0]),Math.min(minmax[1],brush.extent()[1])]
+        // let range = [Math.max(minmax[0],brush.extent()[0]),Math.min(minmax[1],brush.extent()[1])]
         showType(typeName,{
-          [property]:range
+          [property]:brush.extent()
         })
       }
     }
