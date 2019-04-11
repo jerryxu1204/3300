@@ -51,21 +51,19 @@ var battle = (()=>{
 
       map[ele.name] = subMap
     }
-
-  if (opponentPokemon.Type in map[userPokemon.Type]) {
-    userBonus = map[userPokemon.Type][opponentPokemon.Type]
-
-  }
-
-  if (userPokemon.Type in map[opponentPokemon.Type]) {
-    opponentBonus = map[opponentPokemon.Type][userPokemon.Type]
-
-  }
   
 }
 
 function changeUserPokemon(userPokemonNew){
   userPokemon = genStat(userPokemonNew);
+  if (opponentPokemon.Type in map[userPokemon.Type]) {
+    userBonus = map[userPokemon.Type][opponentPokemon.Type]
+  }
+
+  if (userPokemon.Type in map[opponentPokemon.Type]) {
+    opponentBonus = map[opponentPokemon.Type][userPokemon.Type]
+  }
+
   genBattle();
 }
 
@@ -91,7 +89,7 @@ function genBattle(){
        userHP: userPokemon.hp,
        opponentHP: opponentPokemon.hp,
        battleText: userPokemon.Name + ", I choose you!",
-       battleOptions: ["Attack", "Defense", "Special Attack", "Flee"],
+       battleOptions: ["Attack", "Potion", "Special Attack", "Flee"],
        userAttack: userPokemon.Attack,
        opponentAttack: opponentPokemon.Attack,
        userDefense: userPokemon.Defense,
@@ -141,6 +139,7 @@ function genBattle(){
       },
       processSpecialAttack: function(spAttack, spDefense, optionNum, fill, pokemonName, options){
         //uses an ability
+        
         var damage = spAttack / spDefense * this.specialAttackBonus[optionNum] * spAttack * (0.1 + 0.05 * Math.random())
 
         fill -= Math.floor(damage)

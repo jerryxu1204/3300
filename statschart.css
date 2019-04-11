@@ -44,3 +44,12 @@ ul{
 .pokemon-property{
     margin: 0 0 10px 0;
 }
+
+#choosebtn{
+  font-size: 15px;
+  color: white;
+  background: rgb(184, 184, 184);
+  border: none;
+  padding: 3px;
+  border-radius: 15px;
+}

@@ -274,11 +274,9 @@ function showBottom(colors){
   idArea = document.getElementById('pokemonid'),
   stats = d3.select('svg#stats')
     .attr('width',270)
-    .attr('height',100)
+    .attr('height',220)
     .append('g'),
-  imgArea = document.getElementById('pokemonimg'),
-  resistances = document.getElementById('resistances'),
-  weaknesses = document.getElementById('weaknesses');
+  imgArea = document.getElementById('pokemonimg');
 
   stats.attr('transform',"translate("+radius+","+(radius+toppadding)+")");
 
@@ -298,7 +296,11 @@ function showBottom(colors){
     stats.append('path'),
     stats.append('path'),
     stats.append('path'),
+    stats.append('path'),
+    stats.append('path'),
 
+    stats.append('path'),
+    stats.append('path'),
     stats.append('path'),
     stats.append('path'),
     stats.append('path')];
@@ -306,10 +308,14 @@ function showBottom(colors){
   var chartLabels = [
     stats.append('text'),
     stats.append('text'),
+    stats.append('text'),
+    stats.append('text'),
     stats.append('text')
   ]
 
   var chartValueLabels = [
+    stats.append('text'),
+    stats.append('text'),
     stats.append('text'),
     stats.append('text'),
     stats.append('text')
@@ -484,23 +490,8 @@ function showBottom(colors){
         drawDonut(pokemon.attack,250,colors[typeName],0,'Attack');
         drawDonut(pokemon.defense,250,colors[typeName],1,'Defense');
         drawDonut(pokemon.hp,250,colors[typeName],2,'HP');
-
-        resistances.innerHTML = '';
-        weaknesses.innerHTML = '';
-        
-        var types = Object.keys(colors);
-        for(let i=0;i<types.length;i++){
-          let value = pokemon["against_"+types[i]];
-          if(value<1){
-            let node = document.createElement('li');
-            node.innerHTML = '<span style="color:'+colors[types[i]]+'">'+types[i]+'</span> '+(value*100)+'% Damage'
-            weaknesses.appendChild(node);
-          }else if(value>1){
-            let node = document.createElement('li');
-            node.innerHTML = '<span style="color:'+colors[types[i]]+'">'+types[i]+'</span> '+(value*100)+'% Damage'
-            resistances.appendChild(node);
-          }
-        }
+        drawDonut(pokemon.sp_attack,250,colors[typeName],3,'SP Attack');
+        drawDonut(pokemon.sp_defense,250,colors[typeName],4,'SP Defense');
 
       }
     }
@@ -519,26 +510,29 @@ function showBottom(colors){
       .startAngle(0)
       .endAngle(2*3.14);
 
+      var x = (2*radius+spacebetween)*(index%3),
+      y = (2*radius+4*spacebetween)*Math.floor(index/3);
+
       donutCharts[index]
       .attr('d',arcbg)
       .style('fill','#f7f7f7')
-      .attr('transform',"translate("+((2*radius+spacebetween)*index)+",0)");
+      .attr('transform',"translate("+x+","+y+")");
 
       donutCharts[index+3]
       .attr('d',arc)
       .style('fill',color)
-      .attr('transform',"translate("+((2*radius+spacebetween)*index)+",0)");
+      .attr('transform',"translate("+x+","+y+")");
 
       chartLabels[index]
-      .attr('x',(2*radius+spacebetween)*index)
-      .attr('y',-radius*1.5)
+      .attr('x',x)
+      .attr('y',-radius*1.5+y)
       .attr('fill','black')
       .attr({"text-anchor":"middle","alignment-baseline":"middle"})
       .text(title);
 
       chartValueLabels[index]
-      .attr('x',(2*radius+spacebetween)*index)
-      .attr('y',0)
+      .attr('x',x)
+      .attr('y',y)
       .attr('fill','black')
       .attr({"text-anchor":"middle","alignment-baseline":"middle"})
       .text(val);

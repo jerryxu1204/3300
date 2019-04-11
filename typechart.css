@@ -51,24 +51,24 @@ svg {
 }
 
 .is-immune {
-    stroke: rgba(187, 187, 187, 0.911);
-    stroke-width: 2px;
+    stroke: rgba(41, 41, 41, 0.911);
+    stroke-width: 5px;
     stroke-dasharray: 5,10;
-    border: 2px dashed rgba(187, 187, 187, 0.911);
+    border: 2px dashed rgba(41, 41, 41, 0.911);
 }
 
 .weak-effectiveness {
-    stroke: #ef6b57;
-    stroke-width: 2px;
-    background: #ef6c57;
+    stroke: #ef6b57ce;
+    stroke-width: 5px;
+    background: #ef6c57ce;
     border-color: rgba(0,0,0,0);
     height: 2px;
 }
 
 .strong-effectiveness {
-    stroke: #7ed3b2;
-    stroke-width: 2px;
-    background: #7ed3b2;
+    stroke: #7ed3b2ce;
+    stroke-width: 5px;
+    background: #7ed3b2ce;
     border-color: rgba(0,0,0,0);
     height: 2px;
 }
