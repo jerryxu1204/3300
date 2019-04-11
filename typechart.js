@@ -1,4 +1,13 @@
+function getImgName (pokemonName){
+  return 'pokemon_images/'+pokemonName.replace('.','-').replace(' ','')
+  .replace('♀','-m').replace('♂','-f').toLowerCase()+'.png';
+
+}
+
 (()=>{
+  // console.log(battle)
+var chooseBtn = document.getElementById('choosebtn'),
+  battleScene = document.getElementById('app').setAttribute('style','visibility:hidden; height:0;');
 
 var svg = d3.select("svg#small")
   .attr("width", 800)
@@ -18,6 +27,7 @@ var immune = svg.append("g").selectAll(".immune"),
 var expandTypeDetail;
 
 d3.json("types.json", function(error, classes) {
+  
   var nodes = cluster.nodes(packageHierarchy(classes)),
       immunes = typeImmune(nodes),
       strengths = typeStrong(nodes),
@@ -75,17 +85,16 @@ d3.json("types.json", function(error, classes) {
       .on("mouseover", mouseovered)
       .on("mouseout", mouseouted)
       .on("click", (d)=>{
-        
         var colors = {};
         for(let i=0;i<classes.length;i++){
           colors[classes[i].name.toLowerCase()] = classes[i].color;
         }
-        
         if(expandTypeDetail===undefined){
           showBottom(colors)
-          .then(fn=>{
-            expandTypeDetail = fn;
+          .then(res=>{
+            expandTypeDetail = res.fn;
             expandTypeDetail(d.name.toLowerCase());
+            battle.initStatuses(classes,res.allPokemons);
           })
         }
         else{
@@ -231,6 +240,7 @@ function typeStrong(nodes) {
 
 // bottom
 function showBottom(colors){
+
   bottomChart.setAttribute('style','display:true');
     
   const radius = 35,
@@ -292,8 +302,14 @@ function showBottom(colors){
     stats.append('path'),
     stats.append('path'),
     stats.append('path')];
-
+  
   var chartLabels = [
+    stats.append('text'),
+    stats.append('text'),
+    stats.append('text')
+  ]
+
+  var chartValueLabels = [
     stats.append('text'),
     stats.append('text'),
     stats.append('text')
@@ -447,22 +463,38 @@ function showBottom(colors){
         
     }
 
-    function getImgName (pokemonName){
-      return 'pokemon_images/'+pokemonName.replace('.','-').replace(' ','')
-      .replace('♀','-m').replace('♂','-f').toLowerCase()+'.png';
-
+    function genBattleScene(pokemon){
+      battle.changeUserPokemon({Src: getImgName(pokemon.name), 
+                Name:pokemon.name, 
+                Type: pokemon.type1.substring(0,1).toUpperCase()+pokemon.type1.substring(1),
+                hp: pokemon.hp, 
+                Abilities: pokemon.abilities,
+                Attack: pokemon.attack,
+                Defense: pokemon.defense,
+                spAttack: pokemon.sp_attack,
+                spDefense: pokemon.sp_defense
+      });
     }
 
     function showSinglePokemon(pokemon,typeName){
       
       return ()=>{
+        
+        chooseBtn.onclick = ()=>{
+          var battleScene = document.getElementById('app');
+          battleScene.setAttribute('style','visibility:visible; height:auto;');
+          console.log(battleScene)
+          battleScene.scrollIntoView();
+          genBattleScene(pokemon)
+        }
+
         nameArea.innerHTML = pokemon.name;
         idArea.innerHTML = pokemon.pokedex_number;
         imgArea.setAttribute('src', getImgName(pokemon.name));
         
-        drawDonut(pokemon.attack,250,colors[typeName],0);
-        drawDonut(pokemon.defense,250,colors[typeName],1);
-        drawDonut(pokemon.hp,250,colors[typeName],2);
+        drawDonut(pokemon.attack,250,colors[typeName],0,'Attack');
+        drawDonut(pokemon.defense,250,colors[typeName],1,'Defense');
+        drawDonut(pokemon.hp,250,colors[typeName],2,'HP');
 
         resistances.innerHTML = '';
         weaknesses.innerHTML = '';
@@ -484,7 +516,7 @@ function showBottom(colors){
       }
     }
 
-    function drawDonut(val, maxVal, color, index){
+    function drawDonut(val, maxVal, color, index, title){
       
       var arc = d3.svg.arc()
       .outerRadius(radius)
@@ -509,6 +541,13 @@ function showBottom(colors){
       .attr('transform',"translate("+((2*radius+spacebetween)*index)+",0)");
 
       chartLabels[index]
+      .attr('x',(2*radius+spacebetween)*index)
+      .attr('y',-radius*1.5)
+      .attr('fill','black')
+      .attr({"text-anchor":"middle","alignment-baseline":"middle"})
+      .text(title);
+
+      chartValueLabels[index]
       .attr('x',(2*radius+spacebetween)*index)
       .attr('y',0)
       .attr('fill','black')
@@ -564,9 +603,12 @@ function showBottom(colors){
     }
 
 
-    return (typeName)=>{
-      showType(typeName);
-      bottomChart.scrollIntoView({behavior: "smooth"});
+    return {
+      fn: (typeName)=>{
+        showType(typeName);
+        bottomChart.scrollIntoView({behavior: "smooth"})
+      },
+      allPokemons: res
     }
   })
   

@@ -1,70 +1,55 @@
-var userPokemon = {Src: "pokemon_images/pikachu.png", 
-                   Name:"Pikachu", 
-                   Type: "Electric",
-                   hp: 35, 
-                   Abilities: ['Static', 'Lightningrod'],
-                   Attack: 55,
-                   Defense: 40,
-                   spAttack: 50,
-                   spDefense: 50
-                  }
-/*
-var opponentPokemon = {Src: "pngs/0026.png", 
-                       Name:"Raichu", 
-                       Type: "Electric",
-                       hp: 60,
-                       Abilities: ['Static', 'Lightningrod', 'Surge Surfer'],
-                       Attack: 85,
-                       Defense: 50,
-                       spAttack: 95,
-                       spDefense: 85
-                      }
-*/
+var battle = (()=>{
 
-var opponentPokemon = {Src: "pokemon_images/wartortle.png", 
-                       Name:"Wartortle", 
-                       Type: "Water",
-                       hp: 59,
-                       Abilities: ['Torrent', 'Rain Dish'],
-                       Attack: 63,
-                       Defense: 80,
-                       spAttack: 65,
-                       spDefense: 80
-                      }
+  var userPokemon;
 
+  var opponentPokemon;
 
-
-
-
-var map = {}
-d3.json("types.json", function(error, classes) {
-
-  for (var i in classes) {
-    var subMap = {}
-    var ele = classes[i]
-    if (ele.immunes.length != 0) {
-      for (var j in ele.immunes) {
-        subMap[ele.immunes[j]] = 0
-      }
-    }
-
-    if (ele.weaknesses.length != 0) {
-      for (var j in ele.weaknesses) {
-        subMap[ele.weaknesses[j]] = 0.5
-      }
-    }
-
-    if (ele.strengths.length != 0) {
-      for (var j in ele.strengths) {
-        subMap[ele.strengths[j]] = 2
-      }
-    }
-
-    map[ele.name] = subMap
-  }
+  var map = {}
 
   var userBonus = 1
   var opponentBonus = 1
+  function genStat(pokemon){
+    return {Src: getImgName(pokemon.name), 
+                Name:pokemon.name, 
+                Type: pokemon.type1.substring(0,1).toUpperCase()+pokemon.type1.substring(1),
+                hp: pokemon.hp, 
+                Abilities: pokemon.abilities,
+                Attack: pokemon.attack,
+                Defense: pokemon.defense,
+                spAttack: pokemon.sp_attack,
+                spDefense: pokemon.sp_defense
+      };
+  }
+  function initStatuses(typesjson, allPokemons){
+    var classes = typesjson;
+    var pikachu = allPokemons.find(e=>e.name==="Pikachu");
+    userPokemon = genStat(pikachu);
+    var gen1 = allPokemons.filter(p=>p.generation===1);
+    let target = gen1[Math.floor(Math.random()*gen1.length)];
+    opponentPokemon = genStat(target);
+    for (var i in classes) {
+      var subMap = {}
+      var ele = classes[i]
+      if (ele.immunes.length != 0) {
+        for (var j in ele.immunes) {
+          subMap[ele.immunes[j]] = 0
+        }
+      }
+
+      if (ele.weaknesses.length != 0) {
+        for (var j in ele.weaknesses) {
+          subMap[ele.weaknesses[j]] = 0.5
+        }
+      }
+
+      if (ele.strengths.length != 0) {
+        for (var j in ele.strengths) {
+          subMap[ele.strengths[j]] = 2
+        }
+      }
+
+      map[ele.name] = subMap
+    }
 
   if (opponentPokemon.Type in map[userPokemon.Type]) {
     userBonus = map[userPokemon.Type][opponentPokemon.Type]
@@ -75,7 +60,20 @@ d3.json("types.json", function(error, classes) {
     opponentBonus = map[opponentPokemon.Type][userPokemon.Type]
 
   }
+  
+}
 
+function changeUserPokemon(userPokemonNew){
+  userPokemon = userPokemonNew;
+  genBattle();
+}
+
+var generatedBattle = false;
+
+function genBattle(){
+  if(generatedBattle)return;
+  generatedBattle = true;
+  
   var app = new Vue({
     el: '#app',
     data: {
@@ -290,6 +288,7 @@ d3.json("types.json", function(error, classes) {
         }
       },
       resetBattle: function(){
+        this.resetPokemons();
         //reset data to start new game
         this.endOn = false
         this.fightOn = false
@@ -304,6 +303,29 @@ d3.json("types.json", function(error, classes) {
         this.battleText = userPokemon.Name + ", I choose you!",
         this.userHpBar.width = "100%"
         this.opponentHpBar.width = "100%"
+
+      },
+      resetPokemons: function(){
+        this.userPokemonSrc = userPokemon.Src;
+        this.opponentPokemonSrc = opponentPokemon.Src;
+        this.userPokemon = userPokemon.Name
+        this.opponentPokemon= opponentPokemon.Name
+        this.userType= userPokemon.Type
+        this.opponentType= opponentPokemon.Type
+        this.userFill= userPokemon.hp
+        this.opponentFill= opponentPokemon.hp,
+        this.userHP= userPokemon.hp,
+        this.opponentHP= opponentPokemon.hp,
+        this.userAttack= userPokemon.Attack,
+        this.opponentAttack= opponentPokemon.Attack,
+        this.userDefense= userPokemon.Defense,
+        this.opponentDefense= opponentPokemon.Defense,
+        this.userSpAttack= userPokemon.spAttack,
+        this.opponentSpAttack= opponentPokemon.spAttack,
+        this.userSpDefense= userPokemon.spDefense,
+        this.opponentSpDefense= opponentPokemon.spDefense,
+        this.fightOptions= userPokemon.Abilities,
+        this.opponentSpecialAttackOptions= opponentPokemon.Abilities;
       },
       endBattle: function(){
         this.endOn = false
@@ -314,22 +336,11 @@ d3.json("types.json", function(error, classes) {
     }
     
   })
+}
 
+return {
+  changeUserPokemon,
+  initStatuses
+}
 
-
-
-
-
-
-
-
-
-
-});
-
-
-
-
-
-
-
+})()
