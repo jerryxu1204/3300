@@ -9,11 +9,12 @@ var battle = (()=>{
   var userBonus = 1
   var opponentBonus = 1
   function genStat(pokemon){
+    var abilities = JSON.parse(pokemon.abilities.replace(/'/g,'"'));
     return {Src: getImgName(pokemon.name), 
                 Name:pokemon.name, 
                 Type: pokemon.type1.substring(0,1).toUpperCase()+pokemon.type1.substring(1),
                 hp: pokemon.hp, 
-                Abilities: pokemon.abilities,
+                Abilities: abilities,
                 Attack: pokemon.attack,
                 Defense: pokemon.defense,
                 spAttack: pokemon.sp_attack,
@@ -64,7 +65,7 @@ var battle = (()=>{
 }
 
 function changeUserPokemon(userPokemonNew){
-  userPokemon = userPokemonNew;
+  userPokemon = genStat(userPokemonNew);
   genBattle();
 }
 

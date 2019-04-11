@@ -464,16 +464,7 @@ function showBottom(colors){
     }
 
     function genBattleScene(pokemon){
-      battle.changeUserPokemon({Src: getImgName(pokemon.name), 
-                Name:pokemon.name, 
-                Type: pokemon.type1.substring(0,1).toUpperCase()+pokemon.type1.substring(1),
-                hp: pokemon.hp, 
-                Abilities: pokemon.abilities,
-                Attack: pokemon.attack,
-                Defense: pokemon.defense,
-                spAttack: pokemon.sp_attack,
-                spDefense: pokemon.sp_defense
-      });
+      battle.changeUserPokemon(pokemon);
     }
 
     function showSinglePokemon(pokemon,typeName){
@@ -483,7 +474,6 @@ function showBottom(colors){
         chooseBtn.onclick = ()=>{
           var battleScene = document.getElementById('app');
           battleScene.setAttribute('style','visibility:visible; height:auto;');
-          console.log(battleScene)
           battleScene.scrollIntoView();
           genBattleScene(pokemon)
         }
