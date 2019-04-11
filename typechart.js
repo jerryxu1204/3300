@@ -93,9 +93,6 @@ d3.json("types.json", function(error, classes) {
         }
         
       });
-
-    
-
   
 });
 
@@ -236,78 +233,101 @@ function typeStrong(nodes) {
 function showBottom(colors){
   bottomChart.setAttribute('style','display:true');
     
-    const radius = 35,
-    toppadding = 25,
-    spacebetween = 10,
-    dimension = 700;
+  const radius = 35,
+  toppadding = 25,
+  spacebetween = 10,
+  dimension = 700,
+  sliderWidth = 200,
+  sliderPadding = 80;
 
-    var svg2 = d3.select('svg#large').attr('transform','translate('+2*radius+',0)');
+  var svg2 = d3.select('svg#large').attr('transform','translate('+radius+',0)');
 
-    var canvas = svg2.attr("width", dimension)
-    .attr("height", dimension)
-    .append("g").attr("transform", "translate(" +(innerRadiusLarge+radius) + "," + (innerRadiusLarge+radius) + ")");
+  var canvas = svg2.attr("width", dimension+sliderWidth)
+  .attr("height", dimension)
+  .append("g").attr("transform", "translate(" +(innerRadiusLarge+radius) + "," + (innerRadiusLarge+radius) + ")");
 
-    canvas.append('circle')
-    .attr('r',innerRadiusLarge)
-    .attr('fill','#f7f7f7');
+  canvas.append('circle')
+  .attr('r',innerRadiusLarge)
+  .attr('fill','#f7f7f7');
 
-    canvas.append('circle')
-    .attr('r',innerRadiusLarge*0.6)
-    .attr('fill','white');
+  canvas.append('circle')
+  .attr('r',innerRadiusLarge*0.6)
+  .attr('fill','white');
 
-    svg2.append('filter')
-    .attr('id','desaturate')
-    .append('feColorMatrix')
-    .attr('type','matrix')
-    .attr('values',"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0");
+  svg2.append('filter')
+  .attr('id','desaturate')
+  .append('feColorMatrix')
+  .attr('type','matrix')
+  .attr('values',"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0");
 
-    var nameArea = document.getElementById('pokemonname'),
-      idArea = document.getElementById('pokemonid'),
-      stats = d3.select('svg#stats')
-        .attr('width',270)
-        .attr('height',100)
-        .append('g'),
-      imgArea = document.getElementById('pokemonimg'),
-      resistances = document.getElementById('resistances'),
-      weaknesses = document.getElementById('weaknesses');
+  var nameArea = document.getElementById('pokemonname'),
+  idArea = document.getElementById('pokemonid'),
+  stats = d3.select('svg#stats')
+    .attr('width',270)
+    .attr('height',100)
+    .append('g'),
+  imgArea = document.getElementById('pokemonimg'),
+  resistances = document.getElementById('resistances'),
+  weaknesses = document.getElementById('weaknesses');
 
-      stats.attr('transform',"translate("+radius+","+(radius+toppadding)+")");
+  stats.attr('transform',"translate("+radius+","+(radius+toppadding)+")");
 
-    //table
+  //table
 
-    var images = [
-      canvas.append('image'),
-      canvas.append('image'),
-      canvas.append('image'),
-      canvas.append('image'),
-      canvas.append('image'),
-      canvas.append('image'),
-      canvas.append('image'),
-      canvas.append('image')
-    ]
-    var donutCharts = [
-      stats.append('path'),
-      stats.append('path'),
-      stats.append('path'),
+  var images = [
+    canvas.append('image'),
+    canvas.append('image'),
+    canvas.append('image'),
+    canvas.append('image'),
+    canvas.append('image'),
+    canvas.append('image'),
+    canvas.append('image'),
+    canvas.append('image')
+  ]
+  var donutCharts = [
+    stats.append('path'),
+    stats.append('path'),
+    stats.append('path'),
 
-      stats.append('path'),
-      stats.append('path'),
-      stats.append('path')];
+    stats.append('path'),
+    stats.append('path'),
+    stats.append('path')];
 
-    var chartLabels = [
-      stats.append('text'),
-      stats.append('text'),
-      stats.append('text')
-    ]
+  var chartLabels = [
+    stats.append('text'),
+    stats.append('text'),
+    stats.append('text')
+  ]
 
-    var paginaion = [
-      canvas.append('text').text('→').style('font-size','5em').attr('fill','black')
-      .attr('transform','translate('+innerRadiusLarge*0.8+','+innerRadiusLarge+')')
-      .attr({"text-anchor":"middle","alignment-baseline":"middle"}),
-      canvas.append('text').text('←').style('font-size','5em').attr('fill','#ccc')
-      .attr('transform','translate('+(-innerRadiusLarge*0.8)+','+innerRadiusLarge+')')
-      .attr({"text-anchor":"middle","alignment-baseline":"middle"})
-    ];
+  var sliderCanvases = [
+    svg2.append('g')
+    .attr("transform", "translate(" + dimension + "," + (toppadding+sliderPadding) + ")"),
+    svg2.append('g')
+    .attr("transform", "translate(" + dimension + "," + (toppadding +2*sliderPadding)+ ")"),
+    svg2.append('g')
+    .attr("transform", "translate(" + dimension + "," + (toppadding +3*sliderPadding)+ ")"),
+    svg2.append('text').text('Attack')
+    .attr({"x":dimension,"y":(sliderPadding)}),//text-on-chart class
+    svg2.append('text').text('Defense')
+    .attr({"x":dimension,"y":(2*sliderPadding)}),
+    svg2.append('text').text('HP')
+    .attr({"x":dimension,"y":(3*sliderPadding)})
+  ]
+
+  var sliders = sliderCanvases.map(canvas=>canvas.append("g")
+    .attr("class", "x axis"))
+
+  var brushg = sliderCanvases.map(canvas=>canvas.append("g")
+    .attr("class", "brush"))
+
+  var paginaion = [
+    canvas.append('text').text('→').style('font-size','5em').attr('fill','black')
+    .attr('transform','translate('+innerRadiusLarge*0.8+','+innerRadiusLarge+')')
+    .attr({"text-anchor":"middle","alignment-baseline":"middle"}),
+    canvas.append('text').text('←').style('font-size','5em').attr('fill','#ccc')
+    .attr('transform','translate('+(-innerRadiusLarge*0.8)+','+innerRadiusLarge+')')
+    .attr({"text-anchor":"middle","alignment-baseline":"middle"})
+  ];
 
   return fetch('pokemontypes.json')
   .then(res=>{
@@ -331,8 +351,13 @@ function showBottom(colors){
       })
     }
 
-    function showType(typeName){
+    function showType(typeName,filters){
       var pokemons = pokemonsByType[typeName];
+      if(filters){
+        pokemons = pokemons.filter(p=>(filters.attack&&p.attack>=filters.attack[0]&&p.attack<=filters.attack[1])
+        ||(filters.defense&&p.defense>=filters.defense[0]&&p.defense<=filters.defense[1])
+        ||(filters.hp && p.hp>=filters.hp[0]&&p.hp<=filters.hp[1]));
+      }
 
       //pagination
       const imgPerPage = 8;
@@ -345,6 +370,10 @@ function showBottom(colors){
         }
         pagedPokemons[id].push(pokemons[i]);
       }
+
+      makeSlider('attack',pokemons,0, typeName)
+      makeSlider('defense',pokemons,1, typeName)
+      makeSlider('hp',pokemons,2, typeName)
       
       const positionsOnCircle = [
         [0,innerRadiusLarge*0.8],
@@ -393,6 +422,7 @@ function showBottom(colors){
       }
       
       function showPokemons(page){
+        if(pagedPokemons[page]===undefined)return;
         pagedPokemons[page].forEach((pokemon,i)=>{
           if(i==0)showSinglePokemon(pokemon,typeName)();
           
@@ -427,12 +457,29 @@ function showBottom(colors){
       
       return ()=>{
         nameArea.innerHTML = pokemon.name;
-        // idArea.innerHTML = pokemon.order;
+        idArea.innerHTML = pokemon.pokedex_number;
         imgArea.setAttribute('src', getImgName(pokemon.name));
         
-        drawDonut(pokemon.attack,100,colors[typeName],0);
-        drawDonut(pokemon.defense,100,colors[typeName],1);
-        drawDonut(pokemon.hp,100,colors[typeName],2);
+        drawDonut(pokemon.attack,250,colors[typeName],0);
+        drawDonut(pokemon.defense,250,colors[typeName],1);
+        drawDonut(pokemon.hp,250,colors[typeName],2);
+
+        resistances.innerHTML = '';
+        weaknesses.innerHTML = '';
+        
+        var types = Object.keys(colors);
+        for(let i=0;i<types.length;i++){
+          let value = pokemon["against_"+types[i]];
+          if(value<1){
+            let node = document.createElement('li');
+            node.innerHTML = '<span style="color:'+colors[types[i]]+'">'+types[i]+'</span> '+(value*100)+'% Damage'
+            weaknesses.appendChild(node);
+          }else if(value>1){
+            let node = document.createElement('li');
+            node.innerHTML = '<span style="color:'+colors[types[i]]+'">'+types[i]+'</span> '+(value*100)+'% Damage'
+            resistances.appendChild(node);
+          }
+        }
 
       }
     }
@@ -468,6 +515,52 @@ function showBottom(colors){
       .attr({"text-anchor":"middle","alignment-baseline":"middle"})
       .text(val);
 
+    }
+
+    function makeSlider(property, pokemons,index,typeName) {
+      var margin = {top: 20, right: 20, bottom: 20, left: 20},
+        width = sliderWidth - margin.left - margin.right,
+        height = 20;
+      
+      var minmax = d3.extent(pokemons.map(p=>p[property]));
+      var x = d3.scale.linear()
+        .domain([0,250])
+        .range([0, width]);
+
+      var brush = d3.svg.brush()
+        .x(x)
+        .extent(minmax);
+
+      sliders[index]
+        .call(d3.svg.axis()
+          .scale(x)
+          .orient("bottom")
+          .ticks(5)
+          .tickFormat(d3.format("")));
+
+      brushg[index]
+          .call(brush)
+          .attr({'fill':colors[typeName]});
+
+      brushg[index].selectAll("rect")
+          .attr("height", height);
+
+      brush.on('brushend', function() {brushed()})
+
+      // d3.select('#start-number')
+      //   .append('text')
+      //   .text(brush.extent()[0]);
+
+      // d3.select('#end-number')
+      //   .append('text')
+      //   .text(brush.extent()[1]);
+
+      function brushed() {
+        let range = [Math.max(minmax[0],brush.extent()[0]),Math.min(minmax[1],brush.extent()[1])]
+        showType(typeName,{
+          [property]:range
+        })
+      }
     }
 
 
