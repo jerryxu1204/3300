@@ -316,14 +316,20 @@ function showBottom(colors){
   .then(res=>{
     var allPokemons = res;
 
-    var gen1Pokemons = allPokemons.filter(p=>p.generation == 1);
-
     var pokemonsByType = {};
-    gen1Pokemons.forEach(p=>{
-      let type = p.type1.toLowerCase();
-      pokemonsByType[p.type1] = pokemonsByType[p.type1]||[];
-      pokemonsByType[p.type1].push(p);
-    })
+    var lowestGenOfType = {};
+    for(let gen = 1;gen<=6;gen++){
+      var pokemonsInGen = allPokemons.filter(p=>p.generation == gen);
+      pokemonsInGen.forEach(p=>{
+        let type = p.type1.toLowerCase();
+        if(lowestGenOfType[type]===undefined)lowestGenOfType[type] = gen;
+        if(gen>lowestGenOfType[gen]){
+          return;
+        }
+        pokemonsByType[p.type1] = pokemonsByType[p.type1]||[];
+        pokemonsByType[p.type1].push(p);
+      })
+    }
 
     function showType(typeName){
       var pokemons = pokemonsByType[typeName];
@@ -391,7 +397,7 @@ function showBottom(colors){
           if(i==0)showSinglePokemon(pokemon,typeName)();
           
           var img = images[i]
-          .attr('xlink:href', 'pokemon_images/'+pokemon.name.toLowerCase()+'.png')
+          .attr('xlink:href', getImgName(pokemon.name))
           .attr('x',positionsOnCircle[i][0]-imgSize/2)
           .attr('y',positionsOnCircle[i][1]-imgSize/2)
           .style("filter","url(#desaturate)")
@@ -411,12 +417,18 @@ function showBottom(colors){
         
     }
 
+    function getImgName (pokemonName){
+      return 'pokemon_images/'+pokemonName.replace('.','-').replace(' ','')
+      .replace('♀','-m').replace('♂','-f').toLowerCase()+'.png';
+
+    }
+
     function showSinglePokemon(pokemon,typeName){
       
       return ()=>{
         nameArea.innerHTML = pokemon.name;
         // idArea.innerHTML = pokemon.order;
-        imgArea.setAttribute('src','pokemon_images/'+pokemon.name.toLowerCase()+'.png');
+        imgArea.setAttribute('src', getImgName(pokemon.name));
         
         drawDonut(pokemon.attack,100,colors[typeName],0);
         drawDonut(pokemon.defense,100,colors[typeName],1);
