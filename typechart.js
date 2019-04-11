@@ -1,6 +1,6 @@
 function getImgName (pokemonName){
-  return 'pokemon_images/'+pokemonName.replace('.','-').replace(' ','')
-  .replace('♀','-m').replace('♂','-f').toLowerCase()+'.png';
+  return 'pokemon_images/'+pokemonName.replace('.','-').replace(/\s|'/,'')
+  .replace('♀','-m').replace('♂','-f').replace('é','e').toLowerCase()+'.png';
 
 }
 
@@ -425,15 +425,13 @@ function showBottom(colors){
       });
 
       function changePaginationColor(currPage,maxPage,paginaion){
+        paginaion[0].attr('fill','black')
+        paginaion[1].attr('fill','black')
         if(currPage === 0){
           paginaion[1].attr('fill','#ccc')
-          paginaion[0].attr('fill','black')
-        }else if(currPage === maxPage){
-          paginaion[1].attr('fill','black')
+        }
+        if(currPage === maxPage){
           paginaion[0].attr('fill','#ccc')
-        }else{
-          paginaion[1].attr('fill','black')
-          paginaion[0].attr('fill','black')
         }
       }
       
@@ -458,6 +456,7 @@ function showBottom(colors){
             
           
         })
+        changePaginationColor(page,pagedPokemons.length-1,paginaion);
         
       }
         
