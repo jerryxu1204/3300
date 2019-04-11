@@ -74,10 +74,24 @@ d3.json("types.json", function(error, classes) {
       // .text(function(d) { return d.key; })
       .on("mouseover", mouseovered)
       .on("mouseout", mouseouted)
-      .on("click", (d,index)=>{
-        colors = classes.map(e=>e.color);
-        if(expandTypeDetail === undefined) expandTypeDetail = showBottom(colors);
-        expandTypeDetail(index);
+      .on("click", (d)=>{
+        
+        var colors = {};
+        for(let i=0;i<classes.length;i++){
+          colors[classes[i].name.toLowerCase()] = classes[i].color;
+        }
+        
+        if(expandTypeDetail===undefined){
+          showBottom(colors)
+          .then(fn=>{
+            expandTypeDetail = fn;
+            expandTypeDetail(d.name.toLowerCase());
+          })
+        }
+        else{
+          expandTypeDetail(d.name.toLowerCase());
+        }
+        
       });
 
     
@@ -221,151 +235,163 @@ function typeStrong(nodes) {
 // bottom
 function showBottom(colors){
   bottomChart.setAttribute('style','display:true');
-
-  var colors = colors
-  const radius = 35,
-  toppadding = 25,
-  spacebetween = 10,
-  dimension = 700;
-
-  var svg2 = d3.select('svg#large').attr('transform','translate('+2*radius+',0)');
-
-  var canvas = svg2.attr("width", dimension)
-  .attr("height", dimension)
-  .append("g").attr("transform", "translate(" +(innerRadiusLarge+radius) + "," + (innerRadiusLarge+radius) + ")");
-
-  canvas.append('circle')
-  .attr('r',innerRadiusLarge)
-  .attr('fill','#f7f7f7');
-
-  canvas.append('circle')
-  .attr('r',innerRadiusLarge*0.6)
-  .attr('fill','white');
-
-  svg2.append('filter')
-  .attr('id','desaturate')
-  .append('feColorMatrix')
-  .attr('type','matrix')
-  .attr('values',"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0");
-
-  var nameArea = document.getElementById('pokemonname'),
-    idArea = document.getElementById('pokemonid'),
-    stats = d3.select('svg#stats')
-      .attr('width',270)
-      .attr('height',100)
-      .append('g'),
-    imgArea = document.getElementById('pokemonimg'),
-    resistances = document.getElementById('resistances'),
-    weaknesses = document.getElementById('weaknesses');
-
-    stats.attr('transform',"translate("+radius+","+(radius+toppadding)+")");
-
-  //table
-
-  var images = [
-    canvas.append('image'),
-    canvas.append('image'),
-    canvas.append('image'),
-    canvas.append('image'),
-    canvas.append('image'),
-    canvas.append('image'),
-    canvas.append('image'),
-    canvas.append('image')
-  ]
-  var donutCharts = [
-    stats.append('path'),
-    stats.append('path'),
-    stats.append('path'),
-
-    stats.append('path'),
-    stats.append('path'),
-    stats.append('path')];
-
-  var chartLabels = [
-    stats.append('text'),
-    stats.append('text'),
-    stats.append('text')
-  ]
-
-  var paginaion = [
-    canvas.append('text').text('→').style('font-size','5em').attr('fill','black')
-    .attr('transform','translate('+innerRadiusLarge*0.8+','+innerRadiusLarge+')')
-    .attr({"text-anchor":"middle","alignment-baseline":"middle"}),
-    canvas.append('text').text('←').style('font-size','5em').attr('fill','#ccc')
-    .attr('transform','translate('+(-innerRadiusLarge*0.8)+','+innerRadiusLarge+')')
-    .attr({"text-anchor":"middle","alignment-baseline":"middle"})
-  ];
-
-function showType(typeId){
-  d3.json('https://pokeapi.co/api/v2/type/'+typeId+'/',type=>{
     
-    var pokemons = type.pokemon;
+    const radius = 35,
+    toppadding = 25,
+    spacebetween = 10,
+    dimension = 700;
 
-    //pagination
-    const imgPerPage = 8;
-    var pagedPokemons = [];
-    var id = -1;
-    for(let i=0;i<pokemons.length;i++){
-      if(i%imgPerPage===0){
-        id++;
-        pagedPokemons[id] = [];
-      }
-      pagedPokemons[id].push(pokemons[i]);
-    }
-    
-    const positionsOnCircle = [
-      [0,innerRadiusLarge*0.8],
-      [innerRadiusLarge*0.56,innerRadiusLarge*0.56],
-      [innerRadiusLarge*0.8,0],
-      [innerRadiusLarge*0.56,-innerRadiusLarge*0.56],
-      [0,-innerRadiusLarge*0.8],
-      [-innerRadiusLarge*0.56,-innerRadiusLarge*0.56],
-      [-innerRadiusLarge*0.8,0],
-      [-innerRadiusLarge*0.56,innerRadiusLarge*0.56],
+    var svg2 = d3.select('svg#large').attr('transform','translate('+2*radius+',0)');
+
+    var canvas = svg2.attr("width", dimension)
+    .attr("height", dimension)
+    .append("g").attr("transform", "translate(" +(innerRadiusLarge+radius) + "," + (innerRadiusLarge+radius) + ")");
+
+    canvas.append('circle')
+    .attr('r',innerRadiusLarge)
+    .attr('fill','#f7f7f7');
+
+    canvas.append('circle')
+    .attr('r',innerRadiusLarge*0.6)
+    .attr('fill','white');
+
+    svg2.append('filter')
+    .attr('id','desaturate')
+    .append('feColorMatrix')
+    .attr('type','matrix')
+    .attr('values',"0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0");
+
+    var nameArea = document.getElementById('pokemonname'),
+      idArea = document.getElementById('pokemonid'),
+      stats = d3.select('svg#stats')
+        .attr('width',270)
+        .attr('height',100)
+        .append('g'),
+      imgArea = document.getElementById('pokemonimg'),
+      resistances = document.getElementById('resistances'),
+      weaknesses = document.getElementById('weaknesses');
+
+      stats.attr('transform',"translate("+radius+","+(radius+toppadding)+")");
+
+    //table
+
+    var images = [
+      canvas.append('image'),
+      canvas.append('image'),
+      canvas.append('image'),
+      canvas.append('image'),
+      canvas.append('image'),
+      canvas.append('image'),
+      canvas.append('image'),
+      canvas.append('image')
+    ]
+    var donutCharts = [
+      stats.append('path'),
+      stats.append('path'),
+      stats.append('path'),
+
+      stats.append('path'),
+      stats.append('path'),
+      stats.append('path')];
+
+    var chartLabels = [
+      stats.append('text'),
+      stats.append('text'),
+      stats.append('text')
+    ]
+
+    var paginaion = [
+      canvas.append('text').text('→').style('font-size','5em').attr('fill','black')
+      .attr('transform','translate('+innerRadiusLarge*0.8+','+innerRadiusLarge+')')
+      .attr({"text-anchor":"middle","alignment-baseline":"middle"}),
+      canvas.append('text').text('←').style('font-size','5em').attr('fill','#ccc')
+      .attr('transform','translate('+(-innerRadiusLarge*0.8)+','+innerRadiusLarge+')')
+      .attr({"text-anchor":"middle","alignment-baseline":"middle"})
     ];
-    const imgSize = 96;
-    var firstPokemonOnPage;
-    var currPage = 0;
-    showPokemons(0);
-    paginaion[0].on('click',()=>{
-      currPage++;
-      if(currPage>pagedPokemons.length-1){
-        currPage--;
-        return;
+
+  return fetch('pokemontypes.json')
+  .then(res=>{
+    return res.json();
+  })
+  .then(res=>{
+    var allPokemons = res;
+
+    var gen1Pokemons = allPokemons.filter(p=>p.generation == 1);
+
+    var pokemonsByType = {};
+    gen1Pokemons.forEach(p=>{
+      let type = p.type1.toLowerCase();
+      pokemonsByType[p.type1] = pokemonsByType[p.type1]||[];
+      pokemonsByType[p.type1].push(p);
+    })
+
+    function showType(typeName){
+      var pokemons = pokemonsByType[typeName];
+
+      //pagination
+      const imgPerPage = 8;
+      var pagedPokemons = [];
+      var id = -1;
+      for(let i=0;i<pokemons.length;i++){
+        if(i%imgPerPage===0){
+          id++;
+          pagedPokemons[id] = [];
+        }
+        pagedPokemons[id].push(pokemons[i]);
       }
-      changePaginationColor(currPage,pagedPokemons.length-1,paginaion);
-      showPokemons(currPage);
-    });
-    paginaion[1].on('click',()=>{
-      currPage--;
-      if(currPage<0){
+      
+      const positionsOnCircle = [
+        [0,innerRadiusLarge*0.8],
+        [innerRadiusLarge*0.56,innerRadiusLarge*0.56],
+        [innerRadiusLarge*0.8,0],
+        [innerRadiusLarge*0.56,-innerRadiusLarge*0.56],
+        [0,-innerRadiusLarge*0.8],
+        [-innerRadiusLarge*0.56,-innerRadiusLarge*0.56],
+        [-innerRadiusLarge*0.8,0],
+        [-innerRadiusLarge*0.56,innerRadiusLarge*0.56],
+      ];
+      const imgSize = 96;
+      var firstPokemonOnPage;
+      var currPage = 0;
+      showPokemons(0);
+      paginaion[0].on('click',()=>{
         currPage++;
-        return;
-      }
-      changePaginationColor(currPage,pagedPokemons.length-1,paginaion);
-      showPokemons(currPage);
-    });
+        if(currPage>pagedPokemons.length-1){
+          currPage--;
+          return;
+        }
+        changePaginationColor(currPage,pagedPokemons.length-1,paginaion);
+        showPokemons(currPage);
+      });
+      paginaion[1].on('click',()=>{
+        currPage--;
+        if(currPage<0){
+          currPage++;
+          return;
+        }
+        changePaginationColor(currPage,pagedPokemons.length-1,paginaion);
+        showPokemons(currPage);
+      });
 
-    function changePaginationColor(currPage,maxPage,paginaion){
-      if(currPage === 0){
-        paginaion[1].attr('fill','#ccc')
-        paginaion[0].attr('fill','black')
-      }else if(currPage === maxPage){
-        paginaion[1].attr('fill','black')
-        paginaion[0].attr('fill','#ccc')
-      }else{
-        paginaion[1].attr('fill','black')
-        paginaion[0].attr('fill','black')
+      function changePaginationColor(currPage,maxPage,paginaion){
+        if(currPage === 0){
+          paginaion[1].attr('fill','#ccc')
+          paginaion[0].attr('fill','black')
+        }else if(currPage === maxPage){
+          paginaion[1].attr('fill','black')
+          paginaion[0].attr('fill','#ccc')
+        }else{
+          paginaion[1].attr('fill','black')
+          paginaion[0].attr('fill','black')
+        }
       }
-    }
-    
-    function showPokemons(page){
-      pagedPokemons[page].forEach((p,i)=>{
-        d3.json(p.pokemon.url,pokemon=>{
-          if(i==0)showSinglePokemon(pokemon,typeId)();
-
+      
+      function showPokemons(page){
+        pagedPokemons[page].forEach((pokemon,i)=>{
+          if(i==0)showSinglePokemon(pokemon,typeName)();
+          
           var img = images[i]
-          .attr('xlink:href', pokemon.sprites.front_default)
+          .attr('xlink:href', 'pokemon_images/'+pokemon.name.toLowerCase()+'.png')
           .attr('x',positionsOnCircle[i][0]-imgSize/2)
           .attr('y',positionsOnCircle[i][1]-imgSize/2)
           .style("filter","url(#desaturate)")
@@ -376,72 +402,69 @@ function showType(typeId){
           img.on("mouseout",()=>{
             img.style("filter","url(#desaturate)")
           })
-          img.on("click",showSinglePokemon(pokemon,typeId))
+          img.on("click",showSinglePokemon(pokemon,typeName))
+            
           
         })
-      })
+        
+      }
+        
+    }
+
+    function showSinglePokemon(pokemon,typeName){
       
+      return ()=>{
+        nameArea.innerHTML = pokemon.name;
+        // idArea.innerHTML = pokemon.order;
+        imgArea.setAttribute('src','pokemon_images/'+pokemon.name.toLowerCase()+'.png');
+        
+        drawDonut(pokemon.attack,100,colors[typeName],0);
+        drawDonut(pokemon.defense,100,colors[typeName],1);
+        drawDonut(pokemon.hp,100,colors[typeName],2);
+
+      }
     }
-    
+
+    function drawDonut(val, maxVal, color, index){
+      
+      var arc = d3.svg.arc()
+      .outerRadius(radius)
+      .innerRadius(radius*3/4)
+      .startAngle(0)
+      .endAngle(2*3.14*(val/maxVal));
+
+      var arcbg = d3.svg.arc()
+      .outerRadius(radius)
+      .innerRadius(radius*3/4)
+      .startAngle(0)
+      .endAngle(2*3.14);
+
+      donutCharts[index]
+      .attr('d',arcbg)
+      .style('fill','#f7f7f7')
+      .attr('transform',"translate("+((2*radius+spacebetween)*index)+",0)");
+
+      donutCharts[index+3]
+      .attr('d',arc)
+      .style('fill',color)
+      .attr('transform',"translate("+((2*radius+spacebetween)*index)+",0)");
+
+      chartLabels[index]
+      .attr('x',(2*radius+spacebetween)*index)
+      .attr('y',0)
+      .attr('fill','black')
+      .attr({"text-anchor":"middle","alignment-baseline":"middle"})
+      .text(val);
+
+    }
+
+
+    return (typeName)=>{
+      showType(typeName);
+      bottomChart.scrollIntoView({behavior: "smooth"});
+    }
   })
-}
-
-function showSinglePokemon(pokemon,typeId){
-  return ()=>{
-    nameArea.innerHTML = pokemon.name.substring(0,1).toUpperCase()+pokemon.name.substring(1);
-    idArea.innerHTML = pokemon.order;
-    imgArea.setAttribute('src',pokemon.sprites.front_default);
-    imgArea.onmouseover = ()=>{
-      imgArea.setAttribute('src',pokemon.sprites.back_default);
-    }
-    imgArea.onmouseleave = ()=>{
-      imgArea.setAttribute('src',pokemon.sprites.front_default);
-    }
-    
-    drawDonut(pokemon.stats[3].base_stat,100,colors[typeId],0);
-    drawDonut(pokemon.stats[4].base_stat,100,colors[typeId],1);
-    drawDonut(pokemon.stats[5].base_stat,100,colors[typeId],2);
-
-  }
-}
-
-function drawDonut(val, maxVal, color, index){
   
-  var arc = d3.svg.arc()
-  .outerRadius(radius)
-  .innerRadius(radius*3/4)
-  .startAngle(0)
-  .endAngle(2*3.14*(val/maxVal));
-
-  var arcbg = d3.svg.arc()
-  .outerRadius(radius)
-  .innerRadius(radius*3/4)
-  .startAngle(0)
-  .endAngle(2*3.14);
-
-  donutCharts[index]
-  .attr('d',arcbg)
-  .style('fill','#f7f7f7')
-  .attr('transform',"translate("+((2*radius+spacebetween)*index)+",0)");
-
-  donutCharts[index+3]
-  .attr('d',arc)
-  .style('fill',color)
-  .attr('transform',"translate("+((2*radius+spacebetween)*index)+",0)");
-
-  chartLabels[index]
-  .attr('x',(2*radius+spacebetween)*index)
-  .attr('y',0)
-  .attr('fill','black')
-  .attr({"text-anchor":"middle","alignment-baseline":"middle"})
-  .text(val);
-
-}
-
-  return (typeId)=>{
-    showType(typeId);
-    bottomChart.scrollIntoView({behavior: "smooth"});
-  }
 }
 
 
