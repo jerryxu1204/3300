@@ -106,10 +106,11 @@ function genBattle(){
        specialAttackBonus: [1.1, 1.3, 1.6, 2],
        userBonus: userBonus,
        opponentBonus: opponentBonus,
-       endOptions: ["Yes"],
+       endOptions: ["Play again","Choose another Pokemon"],
        fightOn: false,
        optionsOn: true,
        endOn: false,
+       waitChoose: false,
        userHpBar: {width: "100%"},
        opponentHpBar: {width: "100%"}
    },
@@ -244,7 +245,8 @@ function genBattle(){
       processFaint: function(bool){
         this.optionsOn = false
         this.fightOn = false
-        this.endOn = true;
+        this.endOn = true
+        this.waitChoose = false
         if(bool === 1){
           this.opponentAlive = false
         } else {
@@ -293,6 +295,7 @@ function genBattle(){
         //reset data to start new game
         this.endOn = false
         this.fightOn = false
+        this.waitChoose = false
         this.optionsOn = true
         this.battleText = this.battleText
         this.userAlive = true
@@ -332,7 +335,13 @@ function genBattle(){
         this.endOn = false
         this.fightOn = false
         this.optionsOn = false
-        this.battleText = "Game Over!"
+        this.waitChoose = true
+        document.getElementById('small').scrollIntoView({behavior: "smooth"});
+        this.battleText = "Click start when you've done choosing!"
+      },
+      chooseDone: function(){
+        this.resetPokemons();
+        this.resetBattle();
       }
     }
     

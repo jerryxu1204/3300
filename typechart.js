@@ -474,7 +474,7 @@ function showBottom(colors){
         chooseBtn.onclick = ()=>{
           var battleScene = document.getElementById('app');
           battleScene.setAttribute('style','visibility:visible; height:auto;');
-          battleScene.scrollIntoView();
+          battleScene.scrollIntoView({behavior: "smooth"});
           genBattleScene(pokemon)
         }
 

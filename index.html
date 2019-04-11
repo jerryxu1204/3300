@@ -11,7 +11,7 @@
 
 <body>
     <link rel="stylesheet" type="text/css" href="battle.css">
-    <div id="app">
+    <div id="app" style="visibility:hidden; height:0;">
         <h1>Have a battle!</h1>
 
         <div class="introduction">
@@ -65,6 +65,10 @@
                <div v-on:click="resetBattle" class="battle-text-top-left">{{endOptions[0]}}</div>
                <div v-on:click="endBattle"class="battle-text-top-right">{{endOptions[1]}}</div>
            </div>
+           <div v-if="waitChoose" id="waitChoose">
+              <div v-on:click="chooseDone" class="battle-text-top-left">Start!</div>
+              
+          </div>
               
           </div>
         
