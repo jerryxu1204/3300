@@ -52,4 +52,5 @@ ul{
   border: none;
   padding: 3px;
   border-radius: 15px;
+  cursor: pointer;
 }

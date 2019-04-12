@@ -76,6 +76,7 @@ d3.json("types.json", function(error, classes) {
       .attr('xlink:href',d=>'types/'+d.name.toLowerCase()+'.gif')
       .attr("x",-25)//d=>(d.x<180?0:-52)
       .attr("y",-10)
+      .style('cursor','pointer')
 
       .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
       .attr("dy", ".31em")
@@ -235,8 +236,6 @@ function typeStrong(nodes) {
 
   return strengths;
 }
-
-
 
 // bottom
 function showBottom(colors){
@@ -431,13 +430,13 @@ function showBottom(colors){
       });
 
       function changePaginationColor(currPage,maxPage,paginaion){
-        paginaion[0].attr('fill','black')
-        paginaion[1].attr('fill','black')
+        paginaion[0].attr('fill','black').style('cursor','pointer')
+        paginaion[1].attr('fill','black').style('cursor','pointer')
         if(currPage === 0){
-          paginaion[1].attr('fill','#ccc')
+          paginaion[1].attr('fill','#ccc').style('cursor','auto')
         }
         if(currPage === maxPage){
-          paginaion[0].attr('fill','#ccc')
+          paginaion[0].attr('fill','#ccc').style('cursor','auto')
         }
       }
       
@@ -450,7 +449,7 @@ function showBottom(colors){
           .attr('xlink:href', getImgName(pokemon.name))
           .attr('x',positionsOnCircle[i][0]-imgSize/2)
           .attr('y',positionsOnCircle[i][1]-imgSize/2)
-          .style("filter","url(#desaturate)")
+          .style({"filter":"url(#desaturate)",'cursor':'pointer'})
           
           img.on("mouseover",()=>{
             img.style("filter","none")
@@ -518,7 +517,7 @@ function showBottom(colors){
       .style('fill','#f7f7f7')
       .attr('transform',"translate("+x+","+y+")");
 
-      donutCharts[index+3]
+      donutCharts[index+5]
       .attr('d',arc)
       .style('fill',color)
       .attr('transform',"translate("+x+","+y+")");
