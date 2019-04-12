@@ -486,11 +486,11 @@ function showBottom(colors){
         idArea.innerHTML = pokemon.pokedex_number;
         imgArea.setAttribute('src', getImgName(pokemon.name));
         
-        drawDonut(pokemon.attack,250,colors[typeName],0,'Attack');
-        drawDonut(pokemon.defense,250,colors[typeName],1,'Defense');
-        drawDonut(pokemon.hp,250,colors[typeName],2,'HP');
-        drawDonut(pokemon.sp_attack,250,colors[typeName],3,'SP Attack');
-        drawDonut(pokemon.sp_defense,250,colors[typeName],4,'SP Defense');
+        drawDonut(pokemon.attack,185,colors[typeName],0,'Attack');
+        drawDonut(pokemon.defense,230,colors[typeName],1,'Defense');
+        drawDonut(pokemon.hp,255,colors[typeName],2,'HP');
+        drawDonut(pokemon.sp_attack,194,colors[typeName],3,'SP Attack');
+        drawDonut(pokemon.sp_defense,230,colors[typeName],4,'SP Defense');
 
       }
     }

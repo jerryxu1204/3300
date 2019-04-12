@@ -132,15 +132,15 @@ function genBattle(){
       },
 
       processNormalAttack: function(attack, defense, fill, pokemonName){
-        var damage = attack / defense * attack * (0.1 + Math.random() * 0.025)
+        var damage = attack / defense * attack * (0.15 + Math.random() * 0.05)
         fill -= Math.floor(damage)
         this.battleText = pokemonName + " dealt " + Math.floor(damage) + " damage"
         return fill
       },
-      processSpecialAttack: function(spAttack, spDefense, optionNum, fill, pokemonName, options){
+      processSpecialAttack: function(attack, defense, spAttack, spDefense, optionNum, fill, pokemonName, options){
         //uses an ability
         
-        var damage = spAttack / spDefense * this.specialAttackBonus[optionNum] * spAttack * (0.1 + 0.05 * Math.random())
+        var damage = attack / defense * attack * (0.05 + Math.random() * 0.02) + spAttack / spDefense * this.specialAttackBonus[optionNum] * spAttack * (0.1 + 0.03 * Math.random())
 
         fill -= Math.floor(damage)
         this.battleText = pokemonName + " used " + options[optionNum] + ", dealing " + Math.floor(damage) + " damage"
@@ -226,7 +226,7 @@ function genBattle(){
       },
       processAttack: function(optionNum){
         //handle special attack
-        this.opponentFill = this.processSpecialAttack(this.userSpAttack * this.userBonus, this.opponentSpDefense, optionNum - 1, this.opponentFill, this.userPokemon, this.fightOptions)
+        this.opponentFill = this.processSpecialAttack(this.userAttack, this.opponentDefense, this.userSpAttack * this.userBonus, this.opponentSpDefense, optionNum - 1, this.opponentFill, this.userPokemon, this.fightOptions)
         this.processHpBar(this.opponentFill, this.opponentHP, this.opponentHpBar)
         this.processCheckOpponentHp()
       },
@@ -264,7 +264,7 @@ function genBattle(){
             maxAbilityNum = 4
           }
           var random = Math.floor((Math.random() * maxAbilityNum))
-          this.userFill = this.processSpecialAttack(this.opponentSpAttack * this.opponentBonus, this.userSpDefense, random, this.userFill, this.opponentPokemon, this.opponentSpecialAttackOptions)
+          this.userFill = this.processSpecialAttack(this.opponentAttack, this.userDefense, this.opponentSpAttack * this.opponentBonus, this.userSpDefense, random, this.userFill, this.opponentPokemon, this.opponentSpecialAttackOptions)
         }
 
         this.processHpBar(this.userFill, this.userHP, this.userHpBar)
